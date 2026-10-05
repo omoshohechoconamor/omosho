@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Omosho! · Hecho con amor</title>
+<meta name="description" content="Cerámica artesanal hecha a mano. Tazas, cuencos, platos y macetas.">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF3E1;--ink:#2E3A38;--mute:#66726F;--pink:#F6C6CF;--pinkd:#D9788C;--teal:#25857B;--leaf:#B7D98C;--sky:#B3D2EA;--card:#FFFBF2;--line:#EADFC6;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+ *,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Nunito,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{margin:0;font-weight:800}
+.script{font-family:Pacifico,cursive;font-weight:400}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+nav b{font-size:1.6rem;color:var(--pinkd)}
+nav a{text-decoration:none;font-weight:600;margin-left:18px;color:var(--ink)}
+.leaf{position:fixed;z-index:0;width:90px;height:150px;border-radius:0 100% 0 100%;opacity:.55;pointer-events:none;animation:sway 7s ease-in-out infinite alternate}
+.l1{top:6%;left:-20px;background:var(--leaf);transform:rotate(30deg)}
+.l2{top:30%;right:-26px;background:var(--sky);transform:rotate(-40deg);animation-delay:-2s}
+.l3{bottom:8%;left:2%;background:var(--pink);width:70px;height:120px;animation-delay:-4s}
+.l4{bottom:20%;right:4%;background:var(--teal);width:56px;height:96px;opacity:.3;animation-delay:-1s}
+@keyframes sway{to{translate:12px -18px;rotate:14deg}}
+.hero{text-align:center;padding:36px 0 64px}
+.banner{display:inline-block;background:var(--pink);padding:26px 54px 22px;border-radius:14px;animation:drop 1s cubic-bezier(.2,1.2,.3,1) both}
+.banner h1{font-size:clamp(3.6rem,15vw,8rem);line-height:1.1;color:var(--card);-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;letter-spacing:.01em}
+.banner p{font:400 1.7rem Pacifico,cursive;margin:0;color:var(--ink)}
+@keyframes drop{from{transform:translateY(-60px) rotate(-3deg);opacity:0}}
+.hero .sub{max-width:40ch;margin:26px auto 22px;font-size:1.15rem;animation:fade 1s .5s both}
+.hero .btn{animation:fade 1s .8s both}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}}
+.btn{display:inline-block;background:var(--teal);color:#fff;padding:13px 26px;border-radius:999px;font-weight:800;text-decoration:none;border:0;cursor:pointer;font-size:1rem;transition:transform .2s}
+.btn:hover{transform:scale(1.06) rotate(-1deg)}
+.btn.s{padding:9px 16px;font-size:.9rem;background:var(--pinkd);color:#2a1a1e}
+section{padding:60px 0}
+section h2{font-size:clamp(1.9rem,5vw,2.8rem);margin-bottom:8px;color:var(--teal)}
+.lead{color:var(--mute);margin:0 0 24px;max-width:52ch}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.chip{border:2px solid var(--teal);background:transparent;color:var(--ink);padding:8px 18px;border-radius:999px;font:800 .95rem Nunito,sans-serif;cursor:pointer;transition:all .2s}
+.chip[aria-pressed="true"]{background:var(--teal);color:#fff;transform:translateY(-2px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:26px;overflow:hidden;animation:pop .45s both;transition:transform .25s}
+.card:hover{transform:translateY(-6px) rotate(-.6deg)}
+@keyframes pop{from{opacity:0;transform:scale(.88)}}
+.art{height:170px;display:grid;place-items:center;background:var(--tint)}
+.art i{display:block;background:var(--c);transition:transform .4s}
+.card:hover .art i{transform:rotate(-6deg) scale(1.08)}
+.m{width:72px;height:80px;border-radius:5px 5px 24px 24px;position:relative}
+.m::after{content:"";position:absolute;right:-24px;top:16px;width:30px;height:40px;border:9px solid var(--c);border-left:0;border-radius:0 30px 30px 0}
+.b{width:124px;height:60px;border-radius:0 0 124px 124px}
+.p{width:146px;height:24px;border-radius:50%;box-shadow:0 7px 0 rgba(0,0,0,.12)}
+.t{width:96px;height:78px;border-radius:4px 4px 30px 30px;position:relative;margin-top:50px}
+.t::before{content:"";position:absolute;bottom:70px;left:36px;width:26px;height:56px;background:#4FA66A;border-radius:0 100% 0 100%;rotate:-14deg;box-shadow:-26px 14px 0 -4px #6DBB7C,26px 12px 0 -4px #3E8F5A}
+.info{padding:14px 18px 18px}
+.info h3{font-size:1.15rem}
+.info p{margin:4px 0 12px;color:var(--mute);font-size:.93rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font-weight:800;color:var(--pinkd)}
+.about{background:var(--pink);border-radius:32px;padding:40px 30px;text-align:center}
+.about h2{color:var(--ink)}
+.about p{max-width:50ch;margin:10px auto 0}
+.contact{text-align:center}
+footer{text-align:center;padding:10px 0 40px;color:var(--mute);font-size:.9rem}
+
+.cartbtn{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--pinkd);color:#2a1a1e;border:0;border-radius:999px;padding:14px 20px;font:800 1rem Nunito,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(80,40,50,.25)}
+.cartbtn.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.18)}}
+.cartbtn span{background:#fff;border-radius:99px;padding:1px 9px;margin-left:6px}
+.shade{position:fixed;inset:0;background:rgba(40,30,30,.4);z-index:30;opacity:0;pointer-events:none;transition:opacity .3s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:var(--card);z-index:40;transform:translateX(100%);transition:transform .35s;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(18px + env(safe-area-inset-bottom,0px))}
+body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
+.drawer header{display:flex;justify-content:space-between;align-items:center}
+.drawer h2{font-size:1.5rem;margin:0}
+.x{background:none;border:0;font-size:1.8rem;cursor:pointer;color:var(--ink)}
+.lines{flex:1;overflow:auto;margin:14px 0}
+.ln{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ln small{color:var(--mute)}
+.qty{display:flex;align-items:center;gap:8px;grid-row:span 2;align-self:center}
+.qty button{width:30px;height:30px;border-radius:50%;border:2px solid var(--teal);background:none;font-weight:800;cursor:pointer;color:var(--ink)}
+.empty{color:var(--mute);text-align:center;padding:40px 10px}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:1.2rem;margin-bottom:12px}
+.drawer .btn{width:100%;text-align:center}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.tag{display:inline-block;font-size:.8rem;font-weight:800;border-radius:99px;padding:1px 10px;background:var(--leaf);color:#26401a;margin-bottom:6px}
+.tag.low{background:#FFE0A8;color:#5a3b00}.tag.out{background:#e7d7d7;color:#6a3a3a}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<span class="leaf l1"></span><span class="leaf l2"></span><span class="leaf l3"></span><span class="leaf l4"></span>
+<div class="wrap">
+<nav><b class="script">Omosho!</b><span><a href="#catalogo">Catálogo</a><a href="#taller">Nosotros</a><a href="#contacto">Contacto</a></span></nav>
+<header class="hero">
+  <div class="banner"><h1 class="script">Omosho!</h1><p>Hecho con amor</p></div>
+  <p class="sub">Cerámica artesanal para tu mesa y tu casa. Cada pieza se hace a mano, una por una.</p>
+  <a class="btn" href="#catalogo">Ver catálogo</a>
+</header>
+
+<section id="catalogo">
+  <h2>Catálogo</h2>
+  <p class="lead">Elegí una categoría y pedí tu pieza por WhatsApp. Cada una es única, así que el color puede variar un poquito.</p>
+  <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+  <div class="grid" id="grid" aria-live="polite"></div>
+</section>
+
+<section id="taller">
+  <div class="about">
+    <h2 class="script" style="font-weight:400">Hecho con amor</h2>
+    <p>Omosho nace del gusto por el barro y las cosas simples. Modelamos, esmaltamos y cocemos cada pieza en pequeñas tandas, con colores que vienen de la naturaleza. También hacemos pedidos a medida.</p>
+  </div>
+</section>
+
+<section id="contacto" class="contact">
+  <h2>¿Te gustó algo?</h2>
+  <p class="lead" style="margin:0 auto 20px">Escribinos y coordinamos el pago y el envío.</p>
+  <a class="btn" href="https://wa.me/5493814091605" rel="noopener">WhatsApp 381 409-1605</a>
+</section>
+<footer>Omosho! · Hecho con amor</footer>
+</div>
+<button class="cartbtn" id="cartbtn" aria-label="Abrir carrito">🛒 Carrito<span id="count">0</span></button>
+<div class="shade" id="shade"></div>
+<aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
+  <header><h2 class="script" style="font-weight:400">Tu pedido</h2><button class="x" id="close" aria-label="Cerrar carrito">×</button></header>
+  <div class="lines" id="lines"></div>
+  <div class="total"><span>Total</span><span id="total"></span></div>
+  <a class="btn" id="send" href="#" rel="noopener">Enviar pedido por WhatsApp</a>
+</aside>
+<script src="stock.js"></script>
+<script>
+var STATE=window.STOCK||{};
+var WA="5493814091605";
+var items=[
+{n:"Taza flor de cobalto",c:"Tazas",s:"m",col:"#4F8FC0",t:"#F6D9DE",d:"300 ml, esmaltada a mano.",p:"$ 14.000"},
+{n:"Taza rosa jardín",c:"Tazas",s:"m",col:"#E88FA3",t:"#DDEBC8",d:"300 ml, ideal para el té.",p:"$ 14.000"},
+{n:"Taza verde hoja",c:"Tazas",s:"m",col:"#7DB26A",t:"#F6D9DE",d:"350 ml, asa grande.",p:"$ 15.000"},
+{n:"Cuenco celeste",c:"Cuencos",s:"b",col:"#7FB5DA",t:"#FBE7D4",d:"Para sopa, cereal o ensalada.",p:"$ 18.000"},
+{n:"Cuenco turquesa",c:"Cuencos",s:"b",col:"#25857B",t:"#F6D9DE",d:"Esmalte brillante, 15 cm.",p:"$ 18.000"},
+{n:"Plato rosa pastel",c:"Platos",s:"p",col:"#F2A9B8",t:"#D5E8F4",d:"Apto para horno y lavavajillas.",p:"$ 16.000"},
+{n:"Plato verde menta",c:"Platos",s:"p",col:"#A9D48A",t:"#F6D9DE",d:"Ideal para postres, 20 cm.",p:"$ 16.000"},
+{n:"Maceta rosa",c:"Macetas",s:"t",col:"#E88FA3",t:"#DDEBC8",d:"Con plato, 12 cm de alto.",p:"$ 12.000"},
+{n:"Maceta celeste",c:"Macetas",s:"t",col:"#7FB5DA",t:"#FBE7D4",d:"Con agujero de drenaje.",p:"$ 12.000"}
+];
+function stockOf(i){var e=STATE[i.n];return e&&typeof e.s==="number"?e.s:5}
+function priceOf(i){var e=STATE[i.n];return e&&e.p>0?e.p:parseInt(i.p.replace(/\D/g,""),10)}
+function fmt(n){return "$ "+n.toLocaleString("es-AR")}
+var cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
+var chips=document.getElementById("chips"),grid=document.getElementById("grid");
+function show(cat){
+  Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===cat)});
+  grid.innerHTML=items.filter(function(i){return cat==="Todo"||i.c===cat}).map(function(i,k){
+    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art" style="--tint:'+i.t+'"><i class="'+i.s+'" style="--c:'+i.col+';background:'+i.col+'"></i></div><div class="info"><h3>'+i.n+'</h3><p>'+i.d+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
+  }).join("");
+}
+cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c)};chips.appendChild(b)});
+grid.addEventListener("click",function(e){var n=e.target.getAttribute("data-add");if(n){var ok=add(n);e.target.textContent=ok?"¡Agregado!":"Sin más stock";setTimeout(function(){e.target.textContent="Agregar"},900)}});
+var cart={};try{cart=JSON.parse(localStorage.getItem("omosho-cart")||"{}")}catch(e){}
+function find(n){return items.filter(function(i){return i.n===n})[0]}
+function add(n){if((cart[n]||0)>=stockOf(find(n)))return false;cart[n]=(cart[n]||0)+1;draw();var b=document.getElementById("cartbtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");return true}
+function chg(n,d){cart[n]=Math.min((cart[n]||0)+d,stockOf(find(n)));if(cart[n]<=0)delete cart[n];draw()}
+function draw(){
+  try{localStorage.setItem("omosho-cart",JSON.stringify(cart))}catch(e){}
+  var names=Object.keys(cart).filter(find),tot=0,cnt=0,txt=[];
+  document.getElementById("lines").innerHTML=names.length?names.map(function(n){var i=find(n),q=cart[n],sub=priceOf(i)*q;tot+=sub;cnt+=q;txt.push("• "+q+" x "+n+" - "+fmt(sub));
+    return '<div class="ln"><strong>'+n+'</strong><div class="qty"><button data-d="-1" data-n="'+n+'" aria-label="Quitar uno">−</button>'+q+'<button data-d="1" data-n="'+n+'" aria-label="Agregar uno">+</button></div><small>'+fmt(sub)+'</small></div>'}).join(""):'<p class="empty">Tu carrito está vacío. Agregá piezas del catálogo.</p>';
+  document.getElementById("count").textContent=cnt;
+  document.getElementById("total").textContent=fmt(tot);
+  var s=document.getElementById("send");
+  s.toggleAttribute("disabled",!cnt);
+  s.href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola Omosho! Quiero hacer este pedido:\n"+txt.join("\n")+"\n\nTotal: "+fmt(tot)+"\n\n¿Cómo coordinamos el pago y el envío?");
+}
+function toggle(o){document.body.classList.toggle("open",o);document.getElementById("drawer").setAttribute("aria-hidden",!o)}
+document.getElementById("cartbtn").onclick=function(){toggle(true)};
+document.getElementById("close").onclick=document.getElementById("shade").onclick=function(){toggle(false)};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")toggle(false)});
+document.getElementById("lines").addEventListener("click",function(e){var n=e.target.getAttribute("data-n");if(n)chg(n,+e.target.getAttribute("data-d"))});
+show("Todo");draw();
+</script>
+</body>
+</html>

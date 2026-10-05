@@ -4,7 +4,7 @@
 //   p = precio en pesos, sin puntos ni signo $
 // No borres las comillas, los dos puntos ni las comas.
 window.STOCK = {
-  "Taza flor de cobalto": { s: 5, p: 14000 },
+  "Taza flor de cobalto": { s: 0, p: 14000 },
   "Taza rosa jardín": { s: 5, p: 14000 },
   "Taza verde hoja": { s: 5, p: 15000 },
   "Cuenco celeste": { s: 5, p: 18000 },

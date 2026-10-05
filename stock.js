@@ -5,12 +5,12 @@
 // No borres las comillas, los dos puntos ni las comas.
 window.STOCK = {
   "Taza flor de cobalto": { s: 0, p: 14000 },
-  "Taza rosa jardín": { s: 5, p: 14000 },
-  "Taza verde hoja": { s: 5, p: 15000 },
-  "Cuenco celeste": { s: 5, p: 18000 },
-  "Cuenco turquesa": { s: 5, p: 18000 },
-  "Plato rosa pastel": { s: 5, p: 16000 },
-  "Plato verde menta": { s: 5, p: 16000 },
-  "Maceta rosa": { s: 5, p: 12000 },
-  "Maceta celeste": { s: 5, p: 12000 }
+  "Taza rosa jardín": { s: 0, p: 14000 },
+  "Taza verde hoja": { s: 0, p: 15000 },
+  "Cuenco celeste": { s: 0, p: 18000 },
+  "Cuenco turquesa": { s: 0, p: 18000 },
+  "Plato rosa pastel": { s: 0, p: 16000 },
+  "Plato verde menta": { s: 0, p: 16000 },
+  "Maceta rosa": { s: 0, p: 12000 },
+  "Maceta celeste": { s: 0, p: 12000 }
 };

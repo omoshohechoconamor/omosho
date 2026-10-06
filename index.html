@@ -87,6 +87,9 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
 .btn[disabled]{opacity:.45;pointer-events:none}
 .tag{display:inline-block;font-size:.8rem;font-weight:800;border-radius:99px;padding:1px 10px;background:var(--leaf);color:#26401a;margin-bottom:6px}
 .tag.low{background:#FFE0A8;color:#5a3b00}.tag.out{background:#e7d7d7;color:#6a3a3a}
+.art{height:auto;aspect-ratio:1/1;position:relative;display:block;background:var(--pink)}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s,transform .5s}
+.art img.alt{opacity:0}.card:hover .art img.alt{opacity:1}.card:hover .art img:first-child{transform:scale(1.05)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -134,15 +137,17 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
 var STATE=window.STOCK||{};
 var WA="5493814091605";
 var items=[
-{n:"Taza flor de cobalto",c:"Tazas",s:"m",col:"#4F8FC0",t:"#F6D9DE",d:"300 ml, esmaltada a mano.",p:"$ 14.000"},
-{n:"Taza rosa jardín",c:"Tazas",s:"m",col:"#E88FA3",t:"#DDEBC8",d:"300 ml, ideal para el té.",p:"$ 14.000"},
-{n:"Taza verde hoja",c:"Tazas",s:"m",col:"#7DB26A",t:"#F6D9DE",d:"350 ml, asa grande.",p:"$ 15.000"},
-{n:"Cuenco celeste",c:"Cuencos",s:"b",col:"#7FB5DA",t:"#FBE7D4",d:"Para sopa, cereal o ensalada.",p:"$ 18.000"},
-{n:"Cuenco turquesa",c:"Cuencos",s:"b",col:"#25857B",t:"#F6D9DE",d:"Esmalte brillante, 15 cm.",p:"$ 18.000"},
-{n:"Plato rosa pastel",c:"Platos",s:"p",col:"#F2A9B8",t:"#D5E8F4",d:"Apto para horno y lavavajillas.",p:"$ 16.000"},
-{n:"Plato verde menta",c:"Platos",s:"p",col:"#A9D48A",t:"#F6D9DE",d:"Ideal para postres, 20 cm.",p:"$ 16.000"},
-{n:"Maceta rosa",c:"Macetas",s:"t",col:"#E88FA3",t:"#DDEBC8",d:"Con plato, 12 cm de alto.",p:"$ 12.000"},
-{n:"Maceta celeste",c:"Macetas",s:"t",col:"#7FB5DA",t:"#FBE7D4",d:"Con agujero de drenaje.",p:"$ 12.000"}
+{n:"Cuencos texturados",c:"Cuencos",im:["img/cuencos-texturados.jpg"],d:"Relieve hecho a mano y base facetada. Firmados Omosho.",p:"$ 18.000"},
+{n:"Cuencos ovalados flor celeste",c:"Cuencos",im:["img/cuencos-flor-celeste.jpg"],d:"Esmalte verde agua con florcita pintada a mano.",p:"$ 16.000"},
+{n:"Mate arcoíris con cuenquito",c:"Mates",im:["img/mate-arcoiris.jpg"],d:"Verde agua con arcoíris. Incluye el cuenquito cuadrado.",p:"$ 28.000"},
+{n:"Maceta ciervito",c:"Macetas",im:["img/maceta-ciervito.jpg"],d:"Una maceta con carita, ideal para suculentas.",p:"$ 14.000"},
+{n:"Vaso blanco texturado",c:"Tazas y vasos",im:["img/vaso-texturado.jpg"],d:"Esmalte blanco brillante con relieve en el borde.",p:"$ 12.000"},
+{n:"Mate búho",c:"Mates",im:["img/mate-buho.jpg"],d:"Pintado a mano, con asa y bombilla de color.",p:"$ 26.000"},
+{n:"Platitos azules salpicados",c:"Platos",im:["img/platitos-azules.jpg"],d:"Ovalados, con borde azul y salpicado a mano.",p:"$ 15.000"},
+{n:"Taza con plato grabado",c:"Tazas y vasos",im:["img/taza-con-plato.jpg"],d:"Taza grande con plato, motivos pintados a mano.",p:"$ 24.000"},
+{n:"Mate grafismos",c:"Mates",im:["img/mate-grafismos.jpg","img/mate-grafismos-2.jpg"],d:"Blanco y gris con grafismos negros pintados a mano.",p:"$ 28.000"},
+{n:"Cuencos y vaso beige",c:"Cuencos",im:["img/set-beige.jpg"],d:"Esmalte beige con motivos en relieve. Se vende por pieza.",p:"$ 16.000"},
+{n:"Apoyacuchara texturado",c:"Cocina",im:["img/apoyacuchara.jpg"],d:"Para tener la cuchara a mano sin ensuciar la mesada.",p:"$ 9.000"}
 ];
 function stockOf(i){var e=STATE[i.n];return e&&typeof e.s==="number"?e.s:5}
 function priceOf(i){var e=STATE[i.n];return e&&e.p>0?e.p:parseInt(i.p.replace(/\D/g,""),10)}
@@ -152,7 +157,7 @@ var chips=document.getElementById("chips"),grid=document.getElementById("grid");
 function show(cat){
   Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===cat)});
   grid.innerHTML=items.filter(function(i){return cat==="Todo"||i.c===cat}).map(function(i,k){
-    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art" style="--tint:'+i.t+'"><i class="'+i.s+'" style="--c:'+i.col+';background:'+i.col+'"></i></div><div class="info"><h3>'+i.n+'</h3><p>'+i.d+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
+    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+i.im.map(function(u,k){return '<img src="'+u+'" alt="'+(k?"":i.n)+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join("")+'</div><div class="info"><h3>'+i.n+'</h3><p>'+i.d+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
   }).join("");
 }
 cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c)};chips.appendChild(b)});

@@ -7,7 +7,7 @@ window.STOCK = {
   "Cuencos texturados": { s: 5, p: 18000 },
   "Cuencos ovalados flor celeste": { s: 5, p: 16000 },
   "Mate arcoíris con cuenquito": { s: 5, p: 28000 },
-  "Maceta ciervito": { s: 5, p: 14000 },
+  "Mate ciervito": { s: 5, p: 14000 },
   "Vaso blanco texturado": { s: 5, p: 12000 },
   "Mate búho": { s: 5, p: 26000 },
   "Platitos azules salpicados": { s: 5, p: 15000 },

@@ -90,6 +90,12 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
 .art{height:auto;aspect-ratio:1/1;position:relative;display:block;background:var(--pink)}
 .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s,transform .5s}
 .art img.alt{opacity:0}.card:hover .art img.alt{opacity:1}.card:hover .art img:first-child{transform:scale(1.05)}
+.pager{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:34px}
+.pager:empty{display:none}
+.pager button{min-width:42px;height:42px;padding:0 12px;border-radius:999px;border:2px solid var(--teal);background:transparent;color:var(--ink);font:800 1rem Nunito,sans-serif;cursor:pointer;transition:all .2s}
+.pager button:hover:not([disabled]){transform:translateY(-2px)}
+.pager button[aria-current="page"]{background:var(--teal);color:#fff}
+.pager button[disabled]{opacity:.35;cursor:default}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -108,6 +114,7 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
   <p class="lead">Elegí una categoría y pedí tu pieza por WhatsApp. Cada una es única, así que el color puede variar un poquito.</p>
   <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
   <div class="grid" id="grid" aria-live="polite"></div>
+  <div class="pager" id="pager" role="navigation" aria-label="Páginas del catálogo"></div>
 </section>
 
 <section id="taller">
@@ -154,13 +161,29 @@ function priceOf(i){var e=STATE[i.n];return e&&e.p>0?e.p:parseInt(i.p.replace(/\
 function fmt(n){return "$ "+n.toLocaleString("es-AR")}
 var cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
 var chips=document.getElementById("chips"),grid=document.getElementById("grid");
-function show(cat){
+var PER=8,curCat="Todo",curPage=1; // PER = productos por página
+function show(cat,page,scroll){
+  curCat=cat;
   Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===cat)});
-  grid.innerHTML=items.filter(function(i){return cat==="Todo"||i.c===cat}).map(function(i,k){
+  var list=items.filter(function(i){return cat==="Todo"||i.c===cat});
+  var pages=Math.max(1,Math.ceil(list.length/PER));
+  curPage=Math.min(Math.max(page||1,1),pages);
+  grid.innerHTML=list.slice((curPage-1)*PER,curPage*PER).map(function(i,k){
     return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+i.im.map(function(u,k){return '<img src="'+u+'" alt="'+(k?"":i.n)+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join("")+'</div><div class="info"><h3>'+i.n+'</h3><p>'+i.d+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
   }).join("");
+  drawPager(pages);
+  if(scroll)document.getElementById("catalogo").scrollIntoView();
 }
-cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c)};chips.appendChild(b)});
+function drawPager(pages){
+  var p=document.getElementById("pager");
+  if(pages<2){p.innerHTML="";return}
+  var h='<button data-page="'+(curPage-1)+'"'+(curPage<2?' disabled':'')+' aria-label="Página anterior">‹</button>';
+  for(var n=1;n<=pages;n++)h+='<button data-page="'+n+'"'+(n===curPage?' aria-current="page"':'')+' aria-label="Página '+n+'">'+n+'</button>';
+  h+='<button data-page="'+(curPage+1)+'"'+(curPage>=pages?' disabled':'')+' aria-label="Página siguiente">›</button>';
+  p.innerHTML=h;
+}
+document.getElementById("pager").addEventListener("click",function(e){var b=e.target.closest("button[data-page]");if(b&&!b.disabled)show(curCat,+b.getAttribute("data-page"),true)});
+cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c,1)};chips.appendChild(b)});
 grid.addEventListener("click",function(e){var n=e.target.getAttribute("data-add");if(n){var ok=add(n);e.target.textContent=ok?"¡Agregado!":"Sin más stock";setTimeout(function(){e.target.textContent="Agregar"},900)}});
 var cart={};try{cart=JSON.parse(localStorage.getItem("omosho-cart")||"{}")}catch(e){}
 function find(n){return items.filter(function(i){return i.n===n})[0]}
@@ -182,7 +205,35 @@ document.getElementById("cartbtn").onclick=function(){toggle(true)};
 document.getElementById("close").onclick=document.getElementById("shade").onclick=function(){toggle(false)};
 document.addEventListener("keydown",function(e){if(e.key==="Escape")toggle(false)});
 document.getElementById("lines").addEventListener("click",function(e){var n=e.target.getAttribute("data-n");if(n)chg(n,+e.target.getAttribute("data-d"))});
-show("Todo");draw();
+show("Todo",1);draw();
+
+// STOCK DESDE GOOGLE SHEETS (opcional)
+// Pegá entre las comillas el link CSV de tu planilla publicada. Si queda vacío
+// o falla la carga, el sitio usa los valores de stock.js como respaldo.
+var SHEET_URL="";
+function parseCSV(t){var rows=[],row=[],f="",q=false;for(var k=0;k<t.length;k++){var ch=t[k];
+  if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}
+  else if(ch==='"')q=true;
+  else if(ch===","){row.push(f);f=""}
+  else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[k+1]==="\n")k++;row.push(f);rows.push(row);row=[];f=""}
+  else f+=ch}
+  if(f!==""||row.length){row.push(f);rows.push(row)}return rows}
+function loadSheet(){
+  if(!SHEET_URL)return;
+  fetch(SHEET_URL,{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+    var rows=parseCSV(t).slice(1),ok=0;
+    rows.forEach(function(r){
+      var n=(r[0]||"").trim();if(!n)return;
+      if(!find(n)){console.warn("Omosho: '"+n+"' está en la planilla pero no en index.html");return}
+      var s=parseInt((r[1]||"").replace(/\D/g,""),10),p=parseInt((r[2]||"").replace(/\D/g,""),10),e=STATE[n]||{};
+      STATE[n]={s:isNaN(s)?e.s:s,p:isNaN(p)?e.p:p};ok++;
+    });
+    if(!ok)return;
+    Object.keys(cart).forEach(function(n){if(!find(n)||stockOf(find(n))<=0)delete cart[n];else if(cart[n]>stockOf(find(n)))cart[n]=stockOf(find(n))});
+    show(curCat,curPage);draw();
+  }).catch(function(){});
+}
+loadSheet();
 </script>
 </body>
 </html>

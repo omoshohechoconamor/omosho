@@ -89,6 +89,7 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
 .tag.low{background:#FFE0A8;color:#5a3b00}.tag.out{background:#e7d7d7;color:#6a3a3a}
 .art{height:auto;aspect-ratio:1/1;position:relative;display:block;background:var(--pink)}
 .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s,transform .5s}
+.art .ph{position:absolute;inset:0;display:grid;place-items:center;font:400 1.8rem Pacifico,cursive;color:var(--pinkd)}
 .art img.alt{opacity:0}.card:hover .art img.alt{opacity:1}.card:hover .art img:first-child{transform:scale(1.05)}
 .meter{display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;margin:0 0 12px}
 .meter .dots{display:flex;align-items:center;gap:4px}
@@ -164,6 +165,7 @@ var items=[
 {n:"Cuencos y vaso beige",c:"Cuencos",im:["img/set-beige.jpg"],d:"Esmalte beige con motivos en relieve. Se vende por pieza.",p:"$ 16.000"},
 {n:"Apoyacuchara texturado",c:"Cocina",im:["img/apoyacuchara.jpg"],d:"Para tener la cuchara a mano sin ensuciar la mesada.",p:"$ 9.000"}
 ];
+var DEFAULTS=items;
 function stockOf(i){var e=STATE[i.n];return e&&typeof e.s==="number"?e.s:5}
 function priceOf(i){var e=STATE[i.n];return e&&e.p>0?e.p:parseInt(i.p.replace(/\D/g,""),10)}
 function descOf(i){var e=STATE[i.n];return e&&e.d?e.d:i.d}
@@ -173,9 +175,9 @@ function meter(i){var s=stockOf(i),l=limitOf(i),n=Math.min(s,8),h="";
   for(var k=0;k<8;k++)h+='<i'+(k<n?' class="on"':'')+'></i>';
   return '<div class="meter'+(s<=0?' out':s<=3?' low':'')+'"><span class="dots" aria-hidden="true">'+h+(s>8?'<b>+</b>':'')+'</span>'+(s>0&&l<s?'<small>máx. '+l+' por pedido</small>':'')+'</div>'}
 function fmt(n){return "$ "+n.toLocaleString("es-AR")}
-var cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
+var cats=[];
 var chips=document.getElementById("chips"),grid=document.getElementById("grid");
-var PER=16,curCat="Todo",curPage=1; // PER = productos por página
+var PER=8,curCat="Todo",curPage=1; // PER = productos por página
 function show(cat,page,scroll){
   curCat=cat;
   Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===cat)});
@@ -183,7 +185,7 @@ function show(cat,page,scroll){
   var pages=Math.max(1,Math.ceil(list.length/PER));
   curPage=Math.min(Math.max(page||1,1),pages);
   grid.innerHTML=list.slice((curPage-1)*PER,curPage*PER).map(function(i,k){
-    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+i.im.map(function(u,k){return '<img src="'+u+'" alt="'+(k?"":i.n)+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join("")+'</div><div class="info"><h3>'+i.n+'</h3><p>'+esc(descOf(i))+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+meter(i)+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
+    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+(i.im.length?i.im.map(function(u,k){return '<img src="'+esc(u)+'" alt="'+(k?"":esc(i.n))+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join(""):'<span class="ph" aria-hidden="true">Omosho!</span>')+'</div><div class="info"><h3>'+esc(i.n)+'</h3><p>'+esc(descOf(i))+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+meter(i)+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+esc(i.n)+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
   }).join("");
   drawPager(pages);
   if(scroll)document.getElementById("catalogo").scrollIntoView();
@@ -197,7 +199,12 @@ function drawPager(pages){
   p.innerHTML=h;
 }
 document.getElementById("pager").addEventListener("click",function(e){var b=e.target.closest("button[data-page]");if(b&&!b.disabled)show(curCat,+b.getAttribute("data-page"),true)});
-cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c,1)};chips.appendChild(b)});
+function buildChips(){
+  cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
+  chips.innerHTML="";
+  cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c,1)};chips.appendChild(b)});
+}
+buildChips();
 grid.addEventListener("click",function(e){var n=e.target.getAttribute("data-add");if(n){var ok=add(n);e.target.textContent=ok?"¡Agregado!":"Límite alcanzado";setTimeout(function(){e.target.textContent="Agregar"},900)}});
 var cart={};try{cart=JSON.parse(localStorage.getItem("omosho-cart")||"{}")}catch(e){}
 function find(n){return items.filter(function(i){return i.n===n})[0]}
@@ -207,7 +214,7 @@ function draw(){
   try{localStorage.setItem("omosho-cart",JSON.stringify(cart))}catch(e){}
   var names=Object.keys(cart).filter(find),tot=0,cnt=0,txt=[];
   document.getElementById("lines").innerHTML=names.length?names.map(function(n){var i=find(n),q=cart[n],sub=priceOf(i)*q;tot+=sub;cnt+=q;txt.push("• "+q+" x "+n+" - "+fmt(sub));
-    return '<div class="ln"><strong>'+n+'</strong><div class="qty"><button data-d="-1" data-n="'+n+'" aria-label="Quitar uno">−</button>'+q+'<button data-d="1" data-n="'+n+'" aria-label="Agregar uno"'+(q>=limitOf(i)?' disabled':'')+'>+</button></div><small>'+fmt(sub)+(q>=limitOf(i)?' · máximo':'')+'</small></div>'}).join(""):'<p class="empty">Tu carrito está vacío. Agregá piezas del catálogo.</p>';
+    return '<div class="ln"><strong>'+esc(n)+'</strong><div class="qty"><button data-d="-1" data-n="'+esc(n)+'" aria-label="Quitar uno">−</button>'+q+'<button data-d="1" data-n="'+esc(n)+'" aria-label="Agregar uno"'+(q>=limitOf(i)?' disabled':'')+'>+</button></div><small>'+fmt(sub)+(q>=limitOf(i)?' · máximo':'')+'</small></div>'}).join(""):'<p class="empty">Tu carrito está vacío. Agregá piezas del catálogo.</p>';
   document.getElementById("count").textContent=cnt;
   document.getElementById("total").textContent=fmt(tot);
   var s=document.getElementById("send");
@@ -221,11 +228,13 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")toggle(false
 document.getElementById("lines").addEventListener("click",function(e){var n=e.target.getAttribute("data-n");if(n)chg(n,+e.target.getAttribute("data-d"))});
 show("Todo",1);draw();
 
-// STOCK DESDE GOOGLE SHEETS (opcional)
+// CATÁLOGO DESDE GOOGLE SHEETS (opcional)
 // Pegá entre las comillas el link CSV de tu planilla publicada. Si queda vacío
-// o falla la carga, el sitio usa los valores de stock.js como respaldo.
-// Columnas: A nombre | B stock | C precio | D descripción | E límite por pedido (opcional)
-var SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vS2TJc_DbdsE-HbxJDBH21OKURw9w6b1b8uutX-8zG6alVcXpBvXHedO4J5-k306DIPmLIZepUc0gQf/pub?gid=0&single=true&output=csv";
+// o falla la carga, el sitio usa el catálogo de este archivo y stock.js como respaldo.
+// Columnas: A nombre | B stock | C precio | D descripción | E límite por pedido
+//           F categoría | G foto 1 | H foto 2 | I visible (poné "no" para ocultar)
+// Cuando la planilla carga bien, ELLA define qué productos se muestran y en qué orden.
+var SHEET_URL="";
 function parseCSV(t){var rows=[],row=[],f="",q=false;for(var k=0;k<t.length;k++){var ch=t[k];
   if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}
   else if(ch==='"')q=true;
@@ -233,20 +242,34 @@ function parseCSV(t){var rows=[],row=[],f="",q=false;for(var k=0;k<t.length;k++)
   else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[k+1]==="\n")k++;row.push(f);rows.push(row);row=[];f=""}
   else f+=ch}
   if(f!==""||row.length){row.push(f);rows.push(row)}return rows}
+function num(v){return parseInt(String(v||"").replace(/\D/g,""),10)}
+function applySheet(t){
+  var rows=parseCSV(t).slice(1),list=[],st={},base=window.STOCK||{};
+  rows.forEach(function(r){
+    var n=(r[0]||"").trim();if(!n)return;
+    if(st[n]){console.warn("Omosho: nombre repetido en la planilla: '"+n+"'");return}
+    var v=(r[8]||"").trim().toLowerCase();if(v==="no"||v==="0"||v==="false")return;
+    var b=DEFAULTS.filter(function(i){return i.n===n})[0]||{},e=base[n]||{};
+    var s=num(r[1]),p=num(r[2]),m=num(r[4]),d=(r[3]||"").trim(),c=(r[5]||"").trim();
+    var im=[r[6],r[7]].map(function(u){return(u||"").trim()}).filter(Boolean).map(function(u){return/^(https?:|\/|img\/)/i.test(u)?u:"img/"+u});
+    if(isNaN(p)&&isNaN(e.p)&&!b.p)console.warn("Omosho: '"+n+"' no tiene precio");
+    st[n]={s:isNaN(s)?(typeof e.s==="number"?e.s:0):s,p:isNaN(p)?e.p:p,d:d||e.d,m:isNaN(m)?0:m};
+    list.push({n:n,c:c||b.c||"Otros",im:im.length?im:(b.im||[]),d:d||b.d||"",p:b.p||fmt(isNaN(p)?(e.p||0):p)});
+  });
+  if(!list.length)return false;
+  items=list;STATE=st;
+  buildChips();
+  if(cats.indexOf(curCat)<0)curCat="Todo";
+  Object.keys(cart).forEach(function(n){var i=find(n);if(!i||limitOf(i)<=0)delete cart[n];else if(cart[n]>limitOf(i))cart[n]=limitOf(i)});
+  show(curCat,curPage);draw();
+  return true;
+}
 function loadSheet(){
   if(!SHEET_URL)return;
+  var key="omosho-sheet:"+SHEET_URL;
+  try{var c=localStorage.getItem(key);if(c)applySheet(c)}catch(e){}
   fetch(SHEET_URL,{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
-    var rows=parseCSV(t).slice(1),ok=0;
-    rows.forEach(function(r){
-      var n=(r[0]||"").trim();if(!n)return;
-      if(!find(n)){console.warn("Omosho: '"+n+"' está en la planilla pero no en index.html");return}
-      var s=parseInt((r[1]||"").replace(/\D/g,""),10),p=parseInt((r[2]||"").replace(/\D/g,""),10),e=STATE[n]||{};
-      var d=(r[3]||"").trim(),m=parseInt((r[4]||"").replace(/\D/g,""),10);
-      STATE[n]={s:isNaN(s)?e.s:s,p:isNaN(p)?e.p:p,d:d||e.d,m:isNaN(m)?0:m};ok++;
-    });
-    if(!ok)return;
-    Object.keys(cart).forEach(function(n){if(!find(n)||limitOf(find(n))<=0)delete cart[n];else if(cart[n]>limitOf(find(n)))cart[n]=limitOf(find(n))});
-    show(curCat,curPage);draw();
+    if(applySheet(t)){try{localStorage.setItem(key,t)}catch(e){}}
   }).catch(function(){});
 }
 loadSheet();

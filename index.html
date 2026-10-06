@@ -210,7 +210,7 @@ show("Todo",1);draw();
 // STOCK DESDE GOOGLE SHEETS (opcional)
 // Pegá entre las comillas el link CSV de tu planilla publicada. Si queda vacío
 // o falla la carga, el sitio usa los valores de stock.js como respaldo.
-var SHEET_URL="";
+var SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vS2TJc_DbdsE-HbxJDBH21OKURw9w6b1b8uutX-8zG6alVcXpBvXHedO4J5-k306DIPmLIZepUc0gQf/pub?gid=0&single=true&output=csv";
 function parseCSV(t){var rows=[],row=[],f="",q=false;for(var k=0;k<t.length;k++){var ch=t[k];
   if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}
   else if(ch==='"')q=true;

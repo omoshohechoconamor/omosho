@@ -175,7 +175,7 @@ function meter(i){var s=stockOf(i),l=limitOf(i),n=Math.min(s,8),h="";
 function fmt(n){return "$ "+n.toLocaleString("es-AR")}
 var cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
 var chips=document.getElementById("chips"),grid=document.getElementById("grid");
-var PER=8,curCat="Todo",curPage=1; // PER = productos por página
+var PER=16,curCat="Todo",curPage=1; // PER = productos por página
 function show(cat,page,scroll){
   curCat=cat;
   Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===cat)});

@@ -90,6 +90,14 @@ body.open .drawer{transform:none}body.open .shade{opacity:1;pointer-events:auto}
 .art{height:auto;aspect-ratio:1/1;position:relative;display:block;background:var(--pink)}
 .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s,transform .5s}
 .art img.alt{opacity:0}.card:hover .art img.alt{opacity:1}.card:hover .art img:first-child{transform:scale(1.05)}
+.meter{display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;margin:0 0 12px}
+.meter .dots{display:flex;align-items:center;gap:4px}
+.meter i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.meter i.on{background:var(--teal)}
+.meter.low i.on{background:#E8A33D}
+.meter b{font-size:.85rem;color:var(--teal);line-height:1}
+.meter small{color:var(--mute);font-size:.82rem}
+.qty button[disabled]{opacity:.35;cursor:default}
 .pager{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:34px}
 .pager:empty{display:none}
 .pager button{min-width:42px;height:42px;padding:0 12px;border-radius:999px;border:2px solid var(--teal);background:transparent;color:var(--ink);font:800 1rem Nunito,sans-serif;cursor:pointer;transition:all .2s}
@@ -158,6 +166,12 @@ var items=[
 ];
 function stockOf(i){var e=STATE[i.n];return e&&typeof e.s==="number"?e.s:5}
 function priceOf(i){var e=STATE[i.n];return e&&e.p>0?e.p:parseInt(i.p.replace(/\D/g,""),10)}
+function descOf(i){var e=STATE[i.n];return e&&e.d?e.d:i.d}
+function limitOf(i){var e=STATE[i.n]||{},s=stockOf(i);return e.m>0?Math.min(s,e.m):s}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function meter(i){var s=stockOf(i),l=limitOf(i),n=Math.min(s,8),h="";
+  for(var k=0;k<8;k++)h+='<i'+(k<n?' class="on"':'')+'></i>';
+  return '<div class="meter'+(s<=0?' out':s<=3?' low':'')+'"><span class="dots" aria-hidden="true">'+h+(s>8?'<b>+</b>':'')+'</span>'+(s>0&&l<s?'<small>máx. '+l+' por pedido</small>':'')+'</div>'}
 function fmt(n){return "$ "+n.toLocaleString("es-AR")}
 var cats=["Todo"].concat(items.map(function(i){return i.c}).filter(function(c,i,a){return a.indexOf(c)===i}));
 var chips=document.getElementById("chips"),grid=document.getElementById("grid");
@@ -169,7 +183,7 @@ function show(cat,page,scroll){
   var pages=Math.max(1,Math.ceil(list.length/PER));
   curPage=Math.min(Math.max(page||1,1),pages);
   grid.innerHTML=list.slice((curPage-1)*PER,curPage*PER).map(function(i,k){
-    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+i.im.map(function(u,k){return '<img src="'+u+'" alt="'+(k?"":i.n)+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join("")+'</div><div class="info"><h3>'+i.n+'</h3><p>'+i.d+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
+    return '<article class="card" style="animation-delay:'+k*60+'ms"><div class="art">'+i.im.map(function(u,k){return '<img src="'+u+'" alt="'+(k?"":i.n)+'" loading="lazy"'+(k?' class="alt"':'')+'>'}).join("")+'</div><div class="info"><h3>'+i.n+'</h3><p>'+esc(descOf(i))+'</p>'+(stockOf(i)<=0?'<span class="tag out">Agotado</span>':stockOf(i)<=3?'<span class="tag low">Quedan '+stockOf(i)+'</span>':'<span class="tag">Disponible</span>')+meter(i)+'<div class="row"><span class="price">'+fmt(priceOf(i))+'</span>'+(stockOf(i)>0?'<button class="btn s" data-add="'+i.n+'">Agregar</button>':'<button class="btn s" disabled>Agotado</button>')+'</div></div></article>';
   }).join("");
   drawPager(pages);
   if(scroll)document.getElementById("catalogo").scrollIntoView();
@@ -184,16 +198,16 @@ function drawPager(pages){
 }
 document.getElementById("pager").addEventListener("click",function(e){var b=e.target.closest("button[data-page]");if(b&&!b.disabled)show(curCat,+b.getAttribute("data-page"),true)});
 cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=function(){show(c,1)};chips.appendChild(b)});
-grid.addEventListener("click",function(e){var n=e.target.getAttribute("data-add");if(n){var ok=add(n);e.target.textContent=ok?"¡Agregado!":"Sin más stock";setTimeout(function(){e.target.textContent="Agregar"},900)}});
+grid.addEventListener("click",function(e){var n=e.target.getAttribute("data-add");if(n){var ok=add(n);e.target.textContent=ok?"¡Agregado!":"Límite alcanzado";setTimeout(function(){e.target.textContent="Agregar"},900)}});
 var cart={};try{cart=JSON.parse(localStorage.getItem("omosho-cart")||"{}")}catch(e){}
 function find(n){return items.filter(function(i){return i.n===n})[0]}
-function add(n){if((cart[n]||0)>=stockOf(find(n)))return false;cart[n]=(cart[n]||0)+1;draw();var b=document.getElementById("cartbtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");return true}
-function chg(n,d){cart[n]=Math.min((cart[n]||0)+d,stockOf(find(n)));if(cart[n]<=0)delete cart[n];draw()}
+function add(n){if((cart[n]||0)>=limitOf(find(n)))return false;cart[n]=(cart[n]||0)+1;draw();var b=document.getElementById("cartbtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");return true}
+function chg(n,d){cart[n]=Math.min((cart[n]||0)+d,limitOf(find(n)));if(cart[n]<=0)delete cart[n];draw()}
 function draw(){
   try{localStorage.setItem("omosho-cart",JSON.stringify(cart))}catch(e){}
   var names=Object.keys(cart).filter(find),tot=0,cnt=0,txt=[];
   document.getElementById("lines").innerHTML=names.length?names.map(function(n){var i=find(n),q=cart[n],sub=priceOf(i)*q;tot+=sub;cnt+=q;txt.push("• "+q+" x "+n+" - "+fmt(sub));
-    return '<div class="ln"><strong>'+n+'</strong><div class="qty"><button data-d="-1" data-n="'+n+'" aria-label="Quitar uno">−</button>'+q+'<button data-d="1" data-n="'+n+'" aria-label="Agregar uno">+</button></div><small>'+fmt(sub)+'</small></div>'}).join(""):'<p class="empty">Tu carrito está vacío. Agregá piezas del catálogo.</p>';
+    return '<div class="ln"><strong>'+n+'</strong><div class="qty"><button data-d="-1" data-n="'+n+'" aria-label="Quitar uno">−</button>'+q+'<button data-d="1" data-n="'+n+'" aria-label="Agregar uno"'+(q>=limitOf(i)?' disabled':'')+'>+</button></div><small>'+fmt(sub)+(q>=limitOf(i)?' · máximo':'')+'</small></div>'}).join(""):'<p class="empty">Tu carrito está vacío. Agregá piezas del catálogo.</p>';
   document.getElementById("count").textContent=cnt;
   document.getElementById("total").textContent=fmt(tot);
   var s=document.getElementById("send");
@@ -210,7 +224,8 @@ show("Todo",1);draw();
 // STOCK DESDE GOOGLE SHEETS (opcional)
 // Pegá entre las comillas el link CSV de tu planilla publicada. Si queda vacío
 // o falla la carga, el sitio usa los valores de stock.js como respaldo.
-var SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vS2TJc_DbdsE-HbxJDBH21OKURw9w6b1b8uutX-8zG6alVcXpBvXHedO4J5-k306DIPmLIZepUc0gQf/pub?gid=0&single=true&output=csv";
+// Columnas: A nombre | B stock | C precio | D descripción | E límite por pedido (opcional)
+var SHEET_URL="";
 function parseCSV(t){var rows=[],row=[],f="",q=false;for(var k=0;k<t.length;k++){var ch=t[k];
   if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}
   else if(ch==='"')q=true;
@@ -226,10 +241,11 @@ function loadSheet(){
       var n=(r[0]||"").trim();if(!n)return;
       if(!find(n)){console.warn("Omosho: '"+n+"' está en la planilla pero no en index.html");return}
       var s=parseInt((r[1]||"").replace(/\D/g,""),10),p=parseInt((r[2]||"").replace(/\D/g,""),10),e=STATE[n]||{};
-      STATE[n]={s:isNaN(s)?e.s:s,p:isNaN(p)?e.p:p};ok++;
+      var d=(r[3]||"").trim(),m=parseInt((r[4]||"").replace(/\D/g,""),10);
+      STATE[n]={s:isNaN(s)?e.s:s,p:isNaN(p)?e.p:p,d:d||e.d,m:isNaN(m)?0:m};ok++;
     });
     if(!ok)return;
-    Object.keys(cart).forEach(function(n){if(!find(n)||stockOf(find(n))<=0)delete cart[n];else if(cart[n]>stockOf(find(n)))cart[n]=stockOf(find(n))});
+    Object.keys(cart).forEach(function(n){if(!find(n)||limitOf(find(n))<=0)delete cart[n];else if(cart[n]>limitOf(find(n)))cart[n]=limitOf(find(n))});
     show(curCat,curPage);draw();
   }).catch(function(){});
 }
